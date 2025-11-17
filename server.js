@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const express = require('express')
 const cors = require('cors')
 const authController = require('./controllers/auth.js')
+const userController = require('./controllers/user.js')
 
 const app = express();
 mongoose.connect(process.env.MONGODB_URI);
@@ -13,7 +14,9 @@ mongoose.connection.on('connected', () => {
 });
 app.use(express.json())
 
+
 app.use('/',authController)
+app.use('/user',userController)
 
 app.listen(3000,()=>{
     console.log('server running on port 3000')
