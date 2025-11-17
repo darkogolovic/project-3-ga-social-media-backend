@@ -95,14 +95,14 @@ router.post("/login", async (req, res) => {
 
     if (!user.isVerified)
       return res
-        .json(400)
+        .status(400)
         .json({ message: "Email is not verified", needVerification: true });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res
         .status(400)
-        .res.json({ message: " Invalid username or password" });
+        .json({ message: " Invalid username or password" });
 
     const token = jwt.sign(
       {
@@ -123,7 +123,7 @@ router.post("/login", async (req, res) => {
     })
   } catch (error) {
     console.log(error);
-    res.status(500).res.json({message: 'Internal server error'})
+    res.status(500).json({message: 'Internal server error'})
   }
 });
 router.get("/me", isVerified, async (req, res) => {
