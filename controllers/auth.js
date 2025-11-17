@@ -126,6 +126,37 @@ router.post("/login", async (req, res) => {
     res.status(500).json({message: 'Internal server error'})
   }
 });
+
+router.post("/resend-code", async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (user.isVerified) {
+      return res.status(400).json({ message: "User already verified" });
+    }
+
+    const code = Math.floor(100000 + Math.random() * 900000);
+
+    user.verificationCode = code;
+    user.verificationCodeExpires = Date.now() + 10 * 60 * 1000; 
+    await user.save();
+
+    await sendEmail({
+      to: email,
+      subject: "Your verification code",
+      text: `Your code is: ${code}`,
+    });
+
+    res.json({ message: "Verification code resent" });
+
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 router.get("/me", isVerified, async (req, res) => {
   const user = await User.findById(req.user.id).select("-password");
   res.json(user);
