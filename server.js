@@ -6,6 +6,7 @@ const cors = require('cors')
 const authController = require('./controllers/auth.js')
 const userController = require('./controllers/user.js')
 const postsController = require('./controllers/posts.js')
+const likeCommentController= require('./controllers/likes-comments.js')
 
 const app = express();
 app.use(express.json())
@@ -21,6 +22,7 @@ mongoose.connection.on('connected', () => {
 app.use('/',authController);
 app.use('/user',userController);
 app.use('/posts',postsController);
+app.use('/posts',likeCommentController)
 
 
 app.listen(3000,()=>{
