@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema(
     verificationCodeExpires: { type: Date },
   },
 
-  { timeStamps: true }
+  { timestamps: true }
 );
 
 const User= mongoose.model("User", userSchema);

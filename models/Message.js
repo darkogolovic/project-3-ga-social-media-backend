@@ -30,7 +30,7 @@ read : {
 
 },
 
-    { timeStamps: true },
+    { timestamps: true },
 
 );
 

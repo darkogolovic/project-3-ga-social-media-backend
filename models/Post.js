@@ -12,7 +12,7 @@ const comentSchema = new mongoose.Schema({
         required: true,
     },
 },
-    {timeStamps: true},
+    {timestamps: true},
 
 );
 

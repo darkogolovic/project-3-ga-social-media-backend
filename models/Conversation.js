@@ -9,7 +9,7 @@ const conversationSchema = new mongoose.Schema({
         
     },
 },
-    {timeStamps: true},
+    {timestamps: true},
     
 );
 
