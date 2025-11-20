@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const Post = require("../models/Post");
-const auth = require("../middleware/auth");
 const isVerified = require("../middleware/auth.js");
 const upload = require("../configurations/multer.js");
 const cloudinary = require("../configurations/cloudinary.js");
