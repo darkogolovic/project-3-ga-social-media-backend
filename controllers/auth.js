@@ -63,7 +63,7 @@ router.post("/verify", async (req, res) => {
   try {
     const { email, verificationCode } = req.body;
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).res.json({ message: "User not found" });
+    if (!user) return res.status(400).json({ message: "User not found" });
     if (user.isVerified)
       return res.json({ message: "User is already verified" });
     if (user.verificationCode !== verificationCode)
