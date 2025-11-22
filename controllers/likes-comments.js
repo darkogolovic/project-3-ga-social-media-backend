@@ -4,6 +4,7 @@ const Post = require("../models/Post");
 const isVerified = require("../middleware/auth.js");
 
 router.put("/:id/likes", isVerified, async (req, res) => {
+
   try {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: "Post not found" });
@@ -21,6 +22,26 @@ router.put("/:id/likes", isVerified, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+router.post("/:postId/comments", isVerified, async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const { text } = req.body;
+
+    const post = await Post.findById(postId);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    post.comments.push({ author: req.user.id, text });
+    await post.save();
+
+    await post.populate("comments.author", "username");
+
+    const newComment = post.comments[post.comments.length - 1];
+    res.json(newComment);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 router.post("/:id/comments", isVerified, async (req, res) => {
   try {
@@ -33,7 +54,13 @@ router.post("/:id/comments", isVerified, async (req, res) => {
     });
 
     await post.save()
-    res.status(201).json(post)
+      await post.populate({
+      path: "comments.author",
+      select: "username",
+    });
+     const addedComment = post.comments[post.comments.length - 1];
+
+    res.json(addedComment);
 
   } catch (error) {
     console.log(error)
@@ -85,20 +112,7 @@ router.delete("/:id/comments/:commentId", isVerified, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-router.get("/:postId/comments", async (req, res) => {
-  try {
-    const { postId } = req.params;
 
-    const post = await Post.findById(postId).populate("comments.author", "username"); // populate username iz User kolekcije
-
-    if (!post) return res.status(404).json({ message: "Post not found" });
-
-    res.json(post.comments); 
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
-})
 
 
 module.exports = router;
