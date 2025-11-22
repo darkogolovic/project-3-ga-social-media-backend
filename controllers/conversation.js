@@ -5,17 +5,21 @@ const isVerified = require("../middleware/auth.js");
 
 
 router.post("/", isVerified, async (req, res) => {
-  const { senderId, receiverId } = req.body;
+  const { senderId, receiverId, members } = req.body;
 
   try {
+    const finalMembers = members || [senderId, receiverId];
+
+    if (!finalMembers || finalMembers.length !== 2) {
+      return res.status(400).json({ message: "Need exactly two members." });
+    }
+
     let conversation = await Conversation.findOne({
-      members: { $all: [senderId, receiverId] },
+      members: { $all: finalMembers },
     });
 
     if (!conversation) {
-      conversation = await Conversation.create({
-        members: [senderId, receiverId],
-      });
+      conversation = await Conversation.create({ members: finalMembers });
     }
 
     res.status(200).json(conversation);
@@ -23,6 +27,7 @@ router.post("/", isVerified, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
 
 
 router.get("/:userId", isVerified, async (req, res) => {

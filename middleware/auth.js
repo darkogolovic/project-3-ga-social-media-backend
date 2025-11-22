@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User.js')
 
  const isVerified = async (req, res, next) => {
+  console.log("AUTH HEADER:", req.headers.authorization);
   try {
     const header = req.headers.authorization;
 

@@ -13,14 +13,37 @@ router.get("/", isVerified, async (req, res) => {
     let limit = parseInt(req.query.limit) || 5;
 
     let skip = (page - 1) * limit;
+
+    const totalPosts = await Post.countDocuments();
+
     const posts = await Post.find()
       .populate("author", "username email")
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
 
-    res.json(posts);
+    const hasMore = skip + posts.length < totalPosts;
+    const nextPage = hasMore ? page + 1 : null;
+
+    res.json({
+      posts,
+      hasMore,
+      nextPage,
+    });
   } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+router.get("/user/:id", async (req, res) => {
+  try {
+    const posts = await Post.find({ author: req.params.id })
+      .sort({ createdAt: -1 });
+
+    
+
+    res.status(200).json(posts);
+  } catch (err) {
+    console.log(err);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -37,12 +60,13 @@ router.post("/", isVerified, upload.single("image"), async (req, res) => {
       fs.unlinkSync(req.file.path);
     }
     const post = await Post.create({
-      author: req.user._id,
+      author: req.user.id,
       ...newPost,
     });
 
     res.status(201).json(post);
   } catch (err) {
+    console.log(err)
     res.status(500).json({ message: "Server error" });
   }
 });

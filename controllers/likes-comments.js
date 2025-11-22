@@ -85,5 +85,20 @@ router.delete("/:id/comments/:commentId", isVerified, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+router.get("/:postId/comments", async (req, res) => {
+  try {
+    const { postId } = req.params;
+
+    const post = await Post.findById(postId).populate("comments.author", "username"); // populate username iz User kolekcije
+
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    res.json(post.comments); 
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+})
+
 
 module.exports = router;

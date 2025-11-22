@@ -1,47 +1,29 @@
 const { Server } = require("socket.io");
 
-let onlineUsers = {};
-
-function socketServer(server) {
+module.exports = (server) => {
   const io = new Server(server, {
     cors: {
-      origin: "*",
+      origin: "http://localhost:5173",
+      methods: ["GET", "POST"],
     },
   });
 
   io.on("connection", (socket) => {
     console.log("User connected:", socket.id);
 
-    // ADD USER
-    socket.on("addUser", (userId) => {
-      onlineUsers[userId] = socket.id;
-      io.emit("onlineUsers", onlineUsers);
+    socket.on("joinRoom", (conversationId) => {
+      socket.join(conversationId);
+      console.log("Joined room:", conversationId);
     });
 
-    // SEND MESSAGE
-    socket.on("sendMessage", ({ senderId, receiverId, text }) => {
-      const receiverSocketId = onlineUsers[receiverId];
+    socket.on("sendMessage", (data) => {
+      console.log("Message received:", data);
 
-      if (receiverSocketId) {
-        io.to(receiverSocketId).emit("getMessage", {
-          senderId,
-          text,
-        });
-      }
+      io.to(data.conversationId).emit("receiveMessage", data);
     });
 
-    // DISCONNECT
     socket.on("disconnect", () => {
-      Object.keys(onlineUsers).forEach((userId) => {
-        if (onlineUsers[userId] === socket.id) {
-          delete onlineUsers[userId];
-        }
-      });
-
-      io.emit("onlineUsers", onlineUsers);
       console.log("User disconnected");
     });
   });
-}
-
-module.exports = socketServer;
+};
