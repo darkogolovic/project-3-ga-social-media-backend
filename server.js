@@ -15,7 +15,13 @@ const socketServer = require("./socket/socket.js");
 const messagesContorller= require('./controllers/messages.js')
 const PORT = process.env.PORT || 300
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://circle-sociall.netlify.app"
+  ],
+  credentials: true
+}));
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 

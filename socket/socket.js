@@ -9,6 +9,7 @@ module.exports = (server) => {
 
       ],
       methods: ["GET", "POST"],
+      credentials: true
     },
   });
 
