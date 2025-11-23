@@ -13,7 +13,7 @@ const http = require("http");
 const server = http.createServer(app);
 const socketServer = require("./socket/socket.js");
 const messagesContorller= require('./controllers/messages.js')
-
+const PORT = process.env.PORT || 300
 
 app.use(cors());
 app.use(express.json())
@@ -34,6 +34,6 @@ app.use('/conversations',conversationsController);
 app.use('/messages',messagesContorller)
 
 socketServer(server);
-server.listen(3000,()=>{
+server.listen(PORT,()=>{
     console.log('server running on port 3000')
 })
