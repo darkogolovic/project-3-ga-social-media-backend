@@ -7,7 +7,7 @@ const cloudinary = require("../configurations/cloudinary");
 const fs = require("fs");
 const bcrypt = require("bcrypt");
 
-// GET user by ID
+
 router.get("/:id", isVerified, async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select(
@@ -33,7 +33,7 @@ router.put("/:id", isVerified, upload.single("profilePicture"), async (req, res)
 
     if (req.body.username) updateData.username = req.body.username;
 
-    // Upload profile picture to Cloudinary
+  
     if (req.file) {
       const uploadResponse = await cloudinary.uploader.upload(req.file.path, {
         folder: "profile_pictures",
