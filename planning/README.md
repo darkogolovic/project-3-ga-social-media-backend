@@ -89,7 +89,7 @@ cd project-3-ga-social-media-backend
 ### 2. Navigate to the project directory:\*\*
 
 ```sh
-❯ cd project-3-ga-social-media-frontend
+❯ cd project-3-ga-social-media-backend
 ```
 
 ### 3. Install the dependencies:\*\*
