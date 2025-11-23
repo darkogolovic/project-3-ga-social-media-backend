@@ -43,7 +43,7 @@ const postSchema = new mongoose.Schema({
     
     },
 },
-    {timeStamps: true},
+    {timestamps: true},
 
 );
 
