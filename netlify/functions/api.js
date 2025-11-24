@@ -13,6 +13,7 @@ const http = require("http");
 const server = http.createServer(app);
 const socketServer = require("./socket/socket.js");
 const messagesContorller= require('./controllers/messages.js')
+const serverless = require('serverless-http')
 
 
 app.use(cors());
